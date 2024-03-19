@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 let clientCon;
 
 function conntectDb(callback){
-    MongoClient.connect("mongodb://0.0.0.0:27010/del_man_sys")
+    MongoClient.connect("mongodb://0.0.0.0:27017/del_man_sys")
     .then((val) => {
         clientCon = val.db('del_man_sys');
         callback();
