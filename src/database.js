@@ -7,7 +7,7 @@ function conntectDb(callback){
     .then((val) => {
         clientCon = val.db('del_man_sys');
         callback();
-        console.log("connected");
+        console.log("database connected");
     })
     .catch((err) => {
         callback(err);
