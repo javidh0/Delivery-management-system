@@ -2,7 +2,7 @@ const express = require('express');
 const {getDbConn, conntectDb} = require('./database');
 const {ROLES, DB_ACCESS} = require("./authorization/roles.js");
 const { ObjectId } = require('mongodb');
-const {authenticateUser} = require('./authentication/authenticate.js');
+const {authenticateUser, validateAuthentication} = require('./authentication/authenticate.js');
 
 const app = express();
 app.use(express.json());
@@ -15,7 +15,24 @@ function server(error){
         console.log(`Successfully started server on port 1729.`);
     });
 
-    authenticateUser({'user_id':'id_1', 'cred':['javidh', 'pss1']}, conn, () => {console.log("next")});
+    let a_token;
+
+    authenticateUser( 
+        {'user_id':'id_1', 'cred':['javidh', 'pass1']}, 
+        conn,
+        (token) => {
+          a_token = token;
+          console.log(a_token);
+          validateAuthentication(
+            conn,
+            'id_1',
+            a_token,
+            (tkn) => {
+              console.log(tkn);
+            },
+          )
+        }
+      )
   }
 }
 
