@@ -3,6 +3,7 @@ const {getDbConn, conntectDb} = require('./database');
 const {ROLES, DB_ACCESS} = require("./authorization/roles.js");
 const { ObjectId } = require('mongodb');
 const {authenticateUser, validateAuthentication} = require('./authentication/authenticate.js');
+const {authorizeUserRole} = require('./authorization/authorization.js');
 
 const app = express();
 app.use(express.json());
@@ -15,24 +16,27 @@ function server(error){
         console.log(`Successfully started server on port 1729.`);
     });
 
-    let a_token;
+    let a_token = '66057ca8c44dabd554891f39';
+
+    // validateAuthentication(
+    //   conn, 'id_1', a_token, 
+    //   (val) => {
+    //     console.log(val);
+    //   }
+    // ) 
 
     authenticateUser( 
         {'user_id':'id_1', 'cred':['javidh', 'pass1']}, 
         conn,
         (token) => {
-          a_token = token;
-          console.log(a_token);
-          validateAuthentication(
-            conn,
-            'id_1',
-            a_token,
-            (tkn) => {
-              console.log(tkn);
-            },
+          console.log(token);
+          authorizeUserRole(conn, 'id_1', ROLES.CUSTOMER, token,
+            (val) => {
+              console.log(val);
+            }
           )
         }
-      )
+      )    
   }
 }
 
