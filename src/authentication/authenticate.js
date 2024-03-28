@@ -4,11 +4,17 @@ function validateAuthentication(conn, user_id, token, next){
         if(val != null){
             if(val['_id'] == token.toString()){
                 let time = new Date()
-                time.setMinutes(time.getMinutes()-5);
+                time.setMinutes(time.getMinutes()-10);
                 if(val['time'] < time){ 
-                    next("time limit ex");
+                    next("-1");
                     conn.collection('access_tokens').deleteOne({'user_id':user_id});
                 }else{
+                    conn.collection('access_tokens').updateOne(
+                        {'user_id':user_id},
+                        {
+                            '$set' : {time : new Date()}
+                        }
+                    )
                     next(val['_id'].toString());
                 }
             }else{
